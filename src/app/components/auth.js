@@ -10,6 +10,8 @@ export const Auth = () => {
 
     
     const signIn = async()=> {
+        const emailRef = useRef<HTMLInputElement>(null);
+        const passRef = useRef<HTMLInputElement>(null);
         await createUserWithEmailAndPassword(auth, email, password)
     }
     const signInWithGoogle = async()=> {
@@ -17,7 +19,7 @@ export const Auth = () => {
     }
 
     const signOut = async()=> {
-        await signOut(auth) 
+        await signOut(auth)
     } 
 
     return(
