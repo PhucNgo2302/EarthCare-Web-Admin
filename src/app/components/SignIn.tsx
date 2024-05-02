@@ -1,48 +1,56 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth,db } from '../config/firebase';
-import { collection, getFirestore }  from 'firebase/firestore'
-
+import { auth, db } from '../config/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 const SignIn = () => {
-    const [loading,setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
-    const handleSignIn = (e: React.FormEvent<HTMLFormElement>) =>{
-      e.preventDefault()
-      let email = e.currentTarget.email.value;
-      let password = e.currentTarget.password.value;
-      setLoading(true);
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const enteredEmail = e.currentTarget.email.value;
+    const enteredPassword = e.currentTarget.password.value;
+    const userCollectionRef = collection(db, 'users');
 
-      signInWithEmailAndPassword(auth, email, password)
-      .then(async(userCredential) => {
-        const user = userCredential.user;
-        // Truy vấn Firestore để lấy thông tin về người dùng
-        const userDoc = await db.collection('users').doc(user.uid).get();
-        if (userDoc.exists) {
-            const userData = userDoc.data();
-            if (userData.role === 0) {
-                // Nếu vai trò là 0 (admin), cho phép đăng nhập
-                console.log("User is admin. Logging in...");
-            } else {
-                // Nếu không, hiển thị thông báo lỗi
-                console.log("You are not an admin. Access denied.");
-            }
+    setLoading(true);
+
+    // Kiểm tra xem người dùng có tồn tại không
+    const q = query(userCollectionRef, where("email", "==", enteredEmail));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      querySnapshot.forEach(async (doc) => {
+        const userData = doc.data();
+        if (userData.role == 0) {
+          // Nếu người dùng tồn tại và có vai trò là 0 (admin), thực hiện đăng nhập
+          try {
+            await signInWithEmailAndPassword(auth, enteredEmail, enteredPassword);
+            console.log("User is admin. Logging in...");
+            // Thực hiện chuyển hướng hoặc thực hiện các hành động sau khi đăng nhập thành công
+          } catch (error) {
+            console.log(error);
+          }
         } else {
-            // Nếu không tìm thấy thông tin người dùng, hiển thị thông báo lỗi
-            console.log("User data not found. Access denied.");
+          // Nếu người dùng tồn tại nhưng không phải là admin, hiển thị thông báo lỗi
+          console.log("You are not an admin. Access denied.");
+          // Reset giá trị của email và password
+          setEmail('');
+          setPassword('');
         }
-
-        setLoading(false);
-
-      })
-      .catch((error) => {
-        console.log(error)
-        setLoading(false);
       });
-
+    } else {
+      // Nếu không tìm thấy thông tin người dùng, hiển thị thông báo lỗi
+      console.log("User data not found. Access denied.");
+      // Reset giá trị của email và password
+      setEmail('');
+      setPassword('');
     }
 
+    setLoading(false);
+  }
 
   return (
     <>
@@ -53,9 +61,9 @@ const SignIn = () => {
             <div className="px-5 py-7">
               <form onSubmit={handleSignIn}>
                 <label className="font-semibold text-sm text-gray-600 pb-1 block">E-mail</label>
-                <input type="email" name="email" required className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" />
+                <input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" />
                 <label className="font-semibold text-sm text-gray-600 pb-1 block">Password</label>
-                <input type="password" name="password" required className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" />
+                <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" />
                 <button
                   type="submit"
                   className="transition duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block"
@@ -77,4 +85,3 @@ const SignIn = () => {
 }
 
 export default SignIn;
-
