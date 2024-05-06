@@ -2,7 +2,7 @@ import React from 'react'
 import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
 import TopCards from '../components/TopCards'
-import UsersTable from '../components/UsersTable'
+import UsersTable from "../components/UserTable";
 
 const dashboard = () => {
   return (

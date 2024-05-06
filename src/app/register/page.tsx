@@ -5,7 +5,7 @@
     import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
     import { auth } from '../config/firebase';
     import { useRouter } from 'next/navigation'; // Import useRouter từ next/router
-import { addDoc, collection, getFirestore } from 'firebase/firestore';
+    import { addDoc, collection, getFirestore } from 'firebase/firestore';
 
     const Register = () => {
         const router = useRouter(); // Khởi tạo useRouter
@@ -42,7 +42,7 @@ import { addDoc, collection, getFirestore } from 'firebase/firestore';
             await addDoc(collection(db, "users"), {
                 name: name,
                 email: user.email,
-                avatar: "", // Thêm avatar của người dùng vào đây nếu có
+                avatar: "none", // Thêm avatar của người dùng vào đây nếu có
                 role: "0" // 0 là admin 1 là user
             });
 
