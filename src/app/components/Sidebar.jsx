@@ -4,7 +4,9 @@ import { Image } from "next/image";
 import { RxDashboard } from 'react-icons/rx';
 import { FaRegUser } from 'react-icons/fa';
 import { CiMap } from 'react-icons/ci';
-import { IoMapOutline } from 'react-icons/io5';
+
+import { LuUserX } from "react-icons/lu";
+import { MdEvent } from "react-icons/md";
 
 
 const SideBar = ({children}) => {
@@ -18,19 +20,19 @@ const SideBar = ({children}) => {
                     </div>  
                 </Link>
                 <span className="border-b-[1px] border-gray-300 w-full p-2"></span>
-                <Link href="/users">
+                <Link href="/dashboard">
                     <div className="bg-gray-100 text-white-400 hover:text-cyan-400 cursor-pointer my-4 p-3 rounded-lg inline-block">
                         <FaRegUser size={24}/>
                     </div>
                 </Link>
-                <Link href="/map">
+                <Link href="/dashboard/ban_users">
                     <div className="bg-gray-100 text-white-400 hover:text-cyan-400 cursor-pointer my-4 p-3 rounded-lg inline-block">
-                        <IoMapOutline size={24}/>
+                        <LuUserX size={24}/>
                     </div>
                 </Link>
-                <Link href="/">
+                <Link href="/dashboard/activites">
                     <div className="bg-gray-100 text-white-400 hover:text-cyan-400 cursor-pointer my-4 p-3 rounded-lg inline-block">
-                        <FaRegUser size={24}/>
+                        <MdEvent size={24}/>
                     </div>
                 </Link>
                 <Link href="/">

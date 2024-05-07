@@ -7,12 +7,12 @@ import { FaUserCircle } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 import ReactPaginate from 'react-paginate';
 
-const UsersTable = () => {
+const BanUsersTable = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [pageNumber, setPageNumber] = useState(0);
   const [showConfirmation, setShowConfirmation] = useState(false); // State to control confirmation dialog
-  const [userToBan, setUserToBan] = useState(null); // State to store user to ban
+  const [userToUnban, setUserToUnban] = useState(null); // State to store user to unban
 
   const usersPerPage = 5;
   const pagesVisited = pageNumber * usersPerPage;
@@ -35,9 +35,9 @@ const UsersTable = () => {
     try {
       let q;
       if (searchTerm) {
-        q = query(usersCollectionRef, where("name", "==", searchTerm),where("ban", "==", false), where("role", "==", 1), orderBy("name"));
+        q = query(usersCollectionRef, where("name", "==", searchTerm), where("role", "==", 1), where("ban", "==", true), orderBy("name"));
       } else {
-        q = query(usersCollectionRef, where("role", "==", 1),where("ban", "==", false), orderBy("name"));
+        q = query(usersCollectionRef, where("role", "==", 1), where("ban", "==", true), orderBy("name"));
       }
       const querySnapshot = await getDocs(q);
       const formattedUsers = await Promise.all(querySnapshot.docs.map(async (doc) => {
@@ -66,29 +66,26 @@ const UsersTable = () => {
     setPageNumber(selected);
   };
 
-  const handleBanClick = (user) => {
-    setUserToBan(user);
+  const handleUnbanClick = (user) => {
+    setUserToUnban(user);
     setShowConfirmation(true);
   };
 
-  const handleConfirmBan = async () => {
+  const handleConfirmUnban = async () => {
     try {
-      // Get reference to the user document in Firestore
-      const userDocRef = doc(db, "users", userToBan.id);
-      // Update the "ban" field to true
-      await updateDoc(userDocRef, {
-        ban: true
-      });
+      // Perform unban action here by updating the user document in Firestore
+      const userRef = doc(db, "users", userToUnban.id);
+      await updateDoc(userRef, { ban: false });
       // Close confirmation dialog
       setShowConfirmation(false);
-      // Refresh the table
+      // Refresh user list
       handleSearch();
     } catch (error) {
-      console.error("Error banning user:", error);
+      console.error("Error unbanning user:", error);
     }
   };
 
-  const handleCancelBan = () => {
+  const handleCancelUnban = () => {
     // Close confirmation dialog
     setShowConfirmation(false);
   };
@@ -142,10 +139,10 @@ const UsersTable = () => {
                 <td className="px-4 py-2">{user.created_at}</td>
                 <td className="px-4 py-2">
                   <button
-                    onClick={() => handleBanClick(user)}
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                    onClick={() => handleUnbanClick(user)}
+                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
                   >
-                    Ban
+                    Unban
                   </button>
                 </td>
               </tr>
@@ -169,16 +166,16 @@ const UsersTable = () => {
         {showConfirmation && (
           <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-8 rounded-lg">
-              <p>Are you sure you want to ban {userToBan && userToBan.name}?</p>
+              <p>Are you sure you want to unban {userToUnban && userToUnban.name}?</p>
               <div className="flex justify-center mt-4">
                 <button
-                  onClick={handleConfirmBan}
-                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-4"
+                  onClick={handleConfirmUnban}
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-4"
                 >
                   Yes
                 </button>
                 <button
-                  onClick={handleCancelBan}
+                  onClick={handleCancelUnban}
                   className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
                 >
                   Cancel
@@ -192,4 +189,4 @@ const UsersTable = () => {
   );
 };
 
-export default UsersTable;
+export default BanUsersTable;
