@@ -1,4 +1,4 @@
-'use client'
+'use client'    
 import React, { useEffect, useState } from 'react';
 import { db } from "../config/firebase";
 import { collection, getDocs, query, where, orderBy, doc, updateDoc } from "firebase/firestore";
@@ -91,7 +91,7 @@ const BanUsersTable = () => {
   };
 
   return (
-    <div className='w-full md:col-span-2 relative lg:h-auto m-auto p-4 border rounded-lg bg-white'>
+    <div className='w-full md:col-span-2 lg:h-auto m-auto p-4 border rounded-lg bg-white'>
       <div className="flex justify-between mb-4">
         <div className="relative">
           <input

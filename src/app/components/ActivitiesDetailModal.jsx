@@ -81,15 +81,15 @@ const ActivityDetailModal = ({ activity, onClose }) => {
         )}
         {showFullDescriptionModal && (
           <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center">
-            <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleToggleDescriptionModal}></div>
+            <div className="absolute h-full top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleToggleDescriptionModal}></div>
             <div className="bg-white p-8 rounded-lg relative w-11/12 md:w-4/5 lg:w-3/5 overflow-y-auto"> {/* Điều chỉnh kích thước modal */}
               <button onClick={handleToggleDescriptionModal} className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700">
                 <MdClose className="h-6 w-6" />
               </button>
               <h2 className="text-xl font-semibold mb-4">{activity.name}</h2>
               <p className="mb-2 flex items-center"><MdDescription size={24} className="mr-2" /><strong>Description</strong></p>
-              <article className="text-gray-700 text-wrap">
-                <p className="mb-2 overscroll-auto whitespace-pre-line">{activity.description}</p>
+              <article className="break-words">
+                <p className="mb-2 text-gray-700 overscroll-auto whitespace-pre-line">{activity.description}</p>
               </article>
             </div>
           </div>

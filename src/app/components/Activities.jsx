@@ -160,13 +160,13 @@ const Activities = () => {
                   {activity.state === 'inprogress' && !activity.approve ? (
                     <button 
                       onClick={() => handleApproveActivity(activity)} 
-                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mr-4 rounded"
                     >
                       Approve
                     </button>
                   ) : (
                     <button 
-                      className="bg-gray-300 text-gray-500 font-bold py-2 px-4 rounded cursor-not-allowed"
+                      className="bg-gray-300 text-gray-500 font-bold py-2 px-4 mr-4  rounded  cursor-not-allowed"
                       disabled
                     >
                       Approve

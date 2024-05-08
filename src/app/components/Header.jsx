@@ -10,8 +10,8 @@ import LogoutButton from './LogoutButton';
     const router = useRouter(); 
   return (
     <div className = 'flex justify-between px-4 pt-4'>
-        <h2 className='text-2xl text-bold'>DashBoard</h2>
-        <h1 className='text-3xl text-bold'>Welcome back !! </h1>    
+        <strong className='text-2xl text-bold'>DashBoard</strong>
+          
         <LogoutButton router={router}/>
     </div>
   )
