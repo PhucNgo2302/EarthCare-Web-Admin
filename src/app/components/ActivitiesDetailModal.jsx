@@ -1,6 +1,7 @@
+'use client'
 import React, { useState, useEffect } from 'react';
 import { MdClose, MdLocationOn, MdDateRange, MdAccessTime, MdPerson, MdDescription } from 'react-icons/md'; // Import biểu tượng cho người dùng và mô tả
-import { doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy ,doc, updateDoc} from "firebase/firestore";
 import { db } from "../config/firebase";
 
 const ActivityDetailModal = ({ activity, onClose }) => {
@@ -45,7 +46,7 @@ const ActivityDetailModal = ({ activity, onClose }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 max-h-screen">
       <div className="bg-white p-8 rounded-lg relative w-11/12 md:w-3/4 lg:w-2/3 overflow-y-auto"> {/* Thay đổi overflow-y-auto */}
         <button onClick={onClose} className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700">
           <MdClose className="h-6 w-6" />
@@ -75,7 +76,7 @@ const ActivityDetailModal = ({ activity, onClose }) => {
           <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center">
             <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleCloseModal}></div>
             <div className="absolute p-4">
-              <img src={selectedImage} alt="Selected Image" className="max-w-full max-h-full" />
+              <img src={selectedImage} alt="Selected Image" className="max-w-screen max-h-screen" />
             </div>
           </div>
         )}

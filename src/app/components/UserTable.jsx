@@ -94,7 +94,7 @@ const UsersTable = () => {
   };
 
   return (
-    <div className='w-full md:col-span-2 relative lg:h-auto m-auto p-4 border rounded-lg bg-white'>
+    <div className='w-full md:col-span-2 relative lg:h-[80vh] m-auto p-4 border rounded-lg bg-white'>
       <div className="flex justify-between mb-4">
         <div className="relative">
           <input

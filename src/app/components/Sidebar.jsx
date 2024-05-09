@@ -5,6 +5,7 @@ import { RxDashboard } from 'react-icons/rx';
 import { FaRegUser } from 'react-icons/fa';
 import { LuUserX } from "react-icons/lu";
 import { MdEvent } from "react-icons/md";
+import { IoLocationOutline } from "react-icons/io5";
 
 const SideBar = ({ children }) => {
     const [activeButton, setActiveButton] = useState(null);
@@ -60,12 +61,12 @@ const SideBar = ({ children }) => {
                             <MdEvent size={24} />
                         </div>
                     </Link>
-                    <Link href="/">
+                    <Link href="/dashboard/map">
                         <div
                             className={`bg-gray-100 text-white-400 hover:text-cyan-400 cursor-pointer my-4 p-3 rounded-lg inline-block ${activeButton === 'another' ? 'bg-gray-100 text-cyan-400' : ''}`}
                             onClick={() => handleButtonClick('another')}
                         >
-                            <FaRegUser size={24} />
+                            <IoLocationOutline size={24} />
                         </div>
                     </Link>
                 </div>
