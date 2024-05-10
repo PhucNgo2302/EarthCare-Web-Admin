@@ -1,7 +1,6 @@
-'use client'
 import React, { useState, useEffect } from 'react';
 import { MdClose, MdLocationOn, MdDateRange, MdAccessTime, MdPerson, MdDescription } from 'react-icons/md'; // Import biểu tượng cho người dùng và mô tả
-import { collection, getDocs, query, where, orderBy ,doc, updateDoc} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 
 const ActivityDetailModal = ({ activity, onClose }) => {
@@ -52,11 +51,11 @@ const ActivityDetailModal = ({ activity, onClose }) => {
           <MdClose className="h-6 w-6" />
         </button>
         <h2 className="text-xl font-semibold mb-4">{activity.name}</h2>
-        <p className="mb-2 flex items-center"><MdLocationOn size={24} className="mr-2" /> <strong>Address: </strong> {activity.address}</p>
-        <p className="mb-2 flex items-center"><MdDateRange size={24} className="mr-2" /> <strong>Start Date: </strong> {activity.startDateTime}</p>
-        <p className="mb-2 flex items-center"><MdDateRange size={24} className="mr-2" /> <strong>End Date: </strong> {activity.endDateTime}</p>
-        <p className="mb-2 flex items-center"><MdAccessTime size={24} className="mr-2" /> <strong>Hours Start:</strong> {activity.hoursStart}</p>
-        <p className="mb-2 flex items-center"><MdPerson size={24} className="mr-2" /> <strong>Organizer: </strong> {userName}</p>
+        <p className="mb-2 flex items-center"><MdLocationOn size={24} className="text-cyan-500 mr-2" /> <strong className='mr-1 text-cyan-500'>Address: </strong> {activity.address}</p>
+        <p className="mb-2 flex items-center"><MdDateRange size={24} className="text-cyan-500 mr-2" /> <strong className='mr-1 text-cyan-500'>Start Date: </strong> {activity.startDateTime}</p>
+        <p className="mb-2 flex items-center"><MdDateRange size={24} className="text-cyan-500 mr-2" /> <strong className='mr-1 text-cyan-500'>End Date: </strong> {activity.endDateTime}</p>
+        <p className="mb-2 flex items-center"><MdAccessTime size={24} className="text-cyan-500 mr-2" /> <strong className='mr-1 text-cyan-500'>Hours Start:</strong> {activity.hoursStart}</p>
+        <p className="mb-2  flex items-center"><MdPerson size={24} className="text-cyan-500 mr-2" /> <strong className='mr-1 text-cyan-500'>Organizer: </strong> {userName}</p>
         <button onClick={handleToggleDescriptionModal} className="mb-2 flex items-center text-blue-500 hover:underline">
           <MdDescription size={24} className="mr-2" />
           <strong>Description</strong>
@@ -72,14 +71,14 @@ const ActivityDetailModal = ({ activity, onClose }) => {
             />
           ))}
         </div>
-        {selectedImage && (
-          <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center">
-            <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleCloseModal}></div>
-            <div className="absolute p-4">
-              <img src={selectedImage} alt="Selected Image" className="max-w-screen max-h-screen" />
-            </div>
-          </div>
-        )}
+            {selectedImage && (
+              <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center">
+                <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleCloseModal}></div>
+                <div className="absolute p-4">
+                  <img src={selectedImage} alt="Selected Image" className="max-w-screen max-h-screen" />
+                </div>
+              </div>
+            )}
         {showFullDescriptionModal && (
           <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center">
             <div className="absolute h-full top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleToggleDescriptionModal}></div>

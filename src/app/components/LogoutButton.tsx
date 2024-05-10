@@ -10,7 +10,7 @@ const LogoutButton = ({ router }:{router : any}) => {
     };
 
     return (
-        <button onClick={handerSignOut} className='align-middle flex font-bold bg-cyan-400 text-center hover:bg-cyan-500 cursor-pointer text-xs py-3 border rounded-lg text-blue-gray-500 px-4 '>
+        <button onClick={handerSignOut} className='align-middle flex font-bold bg-cyan-400 text-center hover:bg-cyan-300 cursor-pointer text-xs py-3 rounded-lg text-blue-gray-500 px-4 '>
             <MdOutlineLogout size={17} className='mr-1'/>
             Logout
         </button>

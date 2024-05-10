@@ -45,7 +45,7 @@ const RecentCard = () => {
 
     return (
         <div  className="w-full col-span-1 lg:h-[100vh] h-[50vh] m-auto p-4 border rounded-lg bg-white overflow-scroll">
-            <strong className='text-bold'>Recent Added Activity</strong>
+            <strong className='text-bold text-xl text-cyan-400 border-b border-gray-200 '>Recent Added Activity</strong>
             <ul>
                 {activities.map((activity) => {     
                     const createdAt = new Date(activity.createdAt.seconds * 1000);
