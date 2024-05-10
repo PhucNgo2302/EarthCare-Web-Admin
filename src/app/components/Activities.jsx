@@ -18,32 +18,23 @@ const Activities = () => {
   const pagesVisited = pageNumber * usersPerPage;
   const activitiesCollectionRef = collection(db, "activities");
 
-  const handleSearch = async () => {
+  const handleApproveButtonClick = async () => {
     try {
-      let q;
-      if (searchTerm) {
-        q = query(activitiesCollectionRef, where("name", "==", searchTerm), orderBy("createdAt"));
+      if (selectedMarkerInfo) {
+        // Update the 'approve' field of the selected location in Firestore
+        await updateDoc(doc(collection(db, 'locations'), selectedMarkerInfo.id), {
+          approve: true,
+        });
+        // Update 'approve' field in selectedMarkerInfo
+        setSelectedMarkerInfo((prevState) => ({
+          ...prevState,
+          approve: true,
+        }));
       } else {
-        q = query(activitiesCollectionRef, orderBy("createdAt"));
+        console.error('Cannot approve location: Selected marker info is undefined');
       }
-      const querySnapshot = await getDocs(q);
-      const formattedActivities = querySnapshot.docs.map((doc) => {
-        const activity = doc.data();
-        const createdAt = activity.createdAt.toDate().toLocaleString();
-        
-        // Extract day, month, and year from startDateTime
-        const [, day, month, year] = activity.startDateTime.split(/, |\//);
-        
-        // Convert month to zero-based index
-        const startDate = new Date(year, parseInt(month, 10) - 1, parseInt(day, 10));
-        const currentDate = new Date();
-        const state = startDate > currentDate ? 'inprogress' : 'end';
-        
-        return { ...activity, createdAt, id: doc.id, state };
-      });
-      setActivities(formattedActivities);
     } catch (error) {
-      console.error("Error searching activities:", error);
+      console.error('Error approving location:', error);
     }
   };
   
@@ -160,7 +151,7 @@ const Activities = () => {
                   {activity.state === 'inprogress' && !activity.approve ? (
                     <button 
                       onClick={() => handleApproveActivity(activity)} 
-                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mr-4 rounded"
+                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mr-4   rounded"
                     >
                       Approve
                     </button>

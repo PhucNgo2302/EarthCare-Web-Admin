@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { GoogleMap, useLoadScript, Marker, InfoWindow } from "@react-google-maps/api";
 import { db } from "../config/firebase";
 import { googleMapConfig } from "../config/googlemap";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs,updateDoc,doc } from "firebase/firestore";
 
 const MapLocation = () => {
   const [selectedPlace, setSelectedPlace] = useState(null);
@@ -13,6 +13,12 @@ const MapLocation = () => {
   const [selectedMarkerInfo, setSelectedMarkerInfo] = useState(null);
   const [infoWindowSize, setInfoWindowSize] = useState("lg"); 
   const [infoWindowPosition, setInfoWindowPosition] = useState(null); 
+  const [infoWindowVisible, setInfoWindowVisible] = useState(false);
+
+  const handleCloseInfoWindow = () => {
+    setSelectedMarkerInfo(null); // Set selectedMarkerInfo to null
+    setInfoWindowVisible(false); // Set infoWindowVisible to false
+  };
 
 
   // Load script for Google map
@@ -81,8 +87,51 @@ const MapLocation = () => {
   }, []);
 
   // Function to handle marker click
-  const handleMarkerClick = (markerInfo) => {
-    setSelectedMarkerInfo(markerInfo);
+  const handleMarkerClick = (location) => {
+    console.log("Marker clicked:", location)
+    setSelectedMarkerInfo(
+      {
+        locationType: location.locationType,
+        address: location.address,
+        createdAt: location.createdAt,
+        userId: location.userId,
+        image: location.image
+      }
+    );
+    setInfoWindowSize('lg')
+    // Set the position of the info window to the selected place
+    setInfoWindowPosition({
+      lat: parseFloat(location.latitude),
+      lng: parseFloat(location.longitude)
+    });
+
+    // Move map to selected place and zoom in
+    setCurrentLocation({
+      lat: parseFloat(location.latitude),
+      lng: parseFloat(location.longitude)
+    });
+
+    setInfoWindowVisible(true);
+  };
+
+  const handleApproveButtonClick = async () => {
+    try {
+      if (selectedMarkerInfo) {
+        // Update the 'approve' field of the selected location in Firestore
+        await updateDoc(doc(collection(db, 'locations'), selectedMarkerInfo.id), {
+          approve: true,
+        });
+        // Update 'approve' field in selectedMarkerInfo
+        setSelectedMarkerInfo((prevState) => ({
+          ...prevState,
+          approve: true,
+        }));
+      } else {
+        console.error('Cannot approve location: Selected marker info is undefined');
+      }
+    } catch (error) {
+      console.error('Error approving location:', error);
+    }
   };
 
   const handlePlaceSelect = (address) => {
@@ -182,13 +231,7 @@ const MapLocation = () => {
                 key={index}
                 position={{ lat: parseFloat(location.latitude), lng: parseFloat(location.longitude) }}
                 icon={location.approve ? customMarkerIcon1 : customMarkerIcon2}
-                onClick={() => handleMarkerClick({
-                  locationType: location.locationType,
-                  address: location.address,
-                  createdAt: location.createdAt,
-                  userId: location.userId,
-                  image: location.image
-                })}
+                onClick={() => handleMarkerClick(location)}
               />
             );
           }
@@ -196,10 +239,10 @@ const MapLocation = () => {
         })}
         
         {/* InfoWindow for displaying marker info */}
-        {selectedMarkerInfo && infoWindowPosition && (
+        {selectedMarkerInfo && infoWindowPosition && infoWindowVisible && (
           <InfoWindow
             position={infoWindowPosition}
-            onCloseClick={() => setSelectedMarkerInfo(null)}
+            onCloseClick={() => handleCloseInfoWindow}
             options={{ maxWidth: "400" }} // Set max width of info window
           >
             <div className={`p-4 bg-white rounded-lg shadow-lg ${infoWindowSize}`}>
@@ -208,6 +251,12 @@ const MapLocation = () => {
               <p className="mb-2">Created At: {selectedMarkerInfo.createdAt.toDate().toString()}</p>
               <p className="mb-2">User ID: {selectedMarkerInfo.userId}</p>
               <img src={selectedMarkerInfo.image} alt="Location Image" className="w-full h-auto" />
+              {/* Approve button */}
+              {!selectedMarkerInfo.approve && (
+                <button onClick={handleApproveButtonClick} className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  Approve
+                </button>
+              )}
             </div>
           </InfoWindow>
         )}
